@@ -8,3 +8,6 @@ There's no fancy process to run this app. The .csv file is in the project and wi
 - Jetpack Compose
 - MVVM
 - Flow
+- JUnit
+- Mockito
+- Turbine - to test Flow
