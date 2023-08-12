@@ -3,22 +3,19 @@ package com.dicane.csvreader.datasource
 import android.content.Context
 import com.dicane.csvreader.model.Contact
 import com.dicane.csvreader.R
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.async
 import java.io.InputStream
 
-class CsvDatasource {
-    suspend fun fetchFromCsv(context: Context, ioDispatcher: CoroutineDispatcher) : List<Contact> = withContext(ioDispatcher) {
+open class CsvDatasource() {
+    suspend fun fetchFromCsv(context: Context, scope: CoroutineScope) : List<Contact> = scope.async {
         val file = context.resources.openRawResource(
             R.raw.sample_contacts
         )
-        val contacts = file.use {
-            readCsv(it)
-        }
-        contacts
-    }
+        readCsv(file)
+    }.await()
 
-    private fun readCsv(inputStream: InputStream): List<Contact> {
+    fun readCsv(inputStream: InputStream): List<Contact> {
         val reader = inputStream.bufferedReader()
         val header = reader.readLine()
         val fields: MutableList<String> = mutableListOf()

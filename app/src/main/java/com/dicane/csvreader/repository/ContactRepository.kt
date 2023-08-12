@@ -2,16 +2,11 @@ package com.dicane.csvreader.repository
 
 import android.content.Context
 import com.dicane.csvreader.model.Contact
-import com.dicane.csvreader.database.ContactDao
-import com.dicane.csvreader.datasource.CsvDatasource
-import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
 
-class ContactRepository(
-    private val contactDao: ContactDao,
-    private val csvDatasource: CsvDatasource
-) {
-    suspend fun fetchFromDb() = contactDao.getAllContacts()
-    suspend fun update(contact: Contact) = contactDao.update(contact)
-    suspend fun insertIntoDb(contact: Contact) = contactDao.insert(contact)
-    suspend fun fetchFromCsv(context: Context, ioDispatcher: CoroutineDispatcher) = csvDatasource.fetchFromCsv(context, ioDispatcher)
+interface ContactRepository {
+    suspend fun fetchFromDb() : List<Contact>
+    suspend fun update(contact: Contact)
+    suspend fun insertIntoDb(contact: Contact)
+    suspend fun fetchFromCsv(context: Context, scope: CoroutineScope) : List<Contact>
 }

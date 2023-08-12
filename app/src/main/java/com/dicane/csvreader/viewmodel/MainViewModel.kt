@@ -8,21 +8,24 @@ import com.dicane.csvreader.model.Contact
 import com.dicane.csvreader.screens.ScreenState
 import com.dicane.csvreader.usecase.FetchContactsUseCase
 import com.dicane.csvreader.usecase.UpdateContactUseCase
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 class MainViewModel(
     private val fetchContactsUseCase: FetchContactsUseCase,
-    private val updateContactUseCase: UpdateContactUseCase
+    private val updateContactUseCase: UpdateContactUseCase,
+    private val ioDispatcher: CoroutineDispatcher
 ) : ViewModel() {
 
     private val _contactsState = MutableStateFlow<ScreenState>(ScreenState.Empty)
     val contactsState: StateFlow<ScreenState> = _contactsState
 
     fun fetchData(context: Context) {
-        viewModelScope.launch {
-            _contactsState.value = fetchContactsUseCase(context)
+        viewModelScope.launch(ioDispatcher) {
+            val item = fetchContactsUseCase(context, this)
+            _contactsState.value = item
         }
     }
 
@@ -66,11 +69,10 @@ class MainViewModel(
                     set(index, updatedContact)
                 }
             }
-
         }
     }
 
-    fun setLoadingState() {
+fun setLoadingState() {
         _contactsState.value = ScreenState.Loading
     }
 
