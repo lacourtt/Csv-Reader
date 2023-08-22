@@ -1,4 +1,7 @@
 # Csv-Reader
+
+![](https://github.com/lacourtt/Csv-Reader/blob/master/screenrecord.gif)
+
 An app that fetches a contacts list from a .csv file, saves it to a database and allows editing.
 
 # Installation
